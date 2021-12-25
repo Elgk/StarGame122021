@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import static com.star.app.ScreenManager.*;
+
 public class Background {
     private class Star {
         Vector2 position;
@@ -25,6 +27,10 @@ public class Background {
             if (position.x < -200) {
                 position.x = ScreenManager.SCREEN_WIDTH + 200;
                 position.y = MathUtils.random(-200, ScreenManager.SCREEN_HEIGHT + 200);
+            }
+            if (position.y < -200){
+                position.y = SCREEN_HEIGHT + 200;
+                position.x = MathUtils.random(-200, SCREEN_WIDTH + 200);
             }
         }
     }
