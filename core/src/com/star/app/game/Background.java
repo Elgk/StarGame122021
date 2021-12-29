@@ -1,11 +1,13 @@
-package com.star.app;
+package com.star.app.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.star.app.screen.ScreenManager;
+import com.star.app.StarGame;
 
-import static com.star.app.ScreenManager.*;
+import static com.star.app.screen.ScreenManager.*;
 
 public class Background {
     private class Star {
@@ -21,8 +23,8 @@ public class Background {
         }
 
         public void update(float dt) {
-            position.x += (velocity.x - starGame.getHero().getLastDisplacement().x * 15) * dt;
-            position.y += (velocity.y - starGame.getHero().getLastDisplacement().y * 15) * dt;
+            position.x += (velocity.x - gameController.getHero().getVelocity().x * 0.1f) * dt;
+            position.y += (velocity.y - gameController.getHero().getVelocity().y * 0.1f) * dt;
 
             if (position.x < -200) {
                 position.x = ScreenManager.SCREEN_WIDTH + 200;
@@ -36,13 +38,14 @@ public class Background {
     }
 
     private final int STAR_COUNT = 1000;
-    private StarGame starGame;
+    private GameController gameController;
+  //  private StarGame starGame;
     private Texture textureCosmos;
     private Texture textureStar;
     private Star[] stars;
 
-    public Background(StarGame starGame) {
-        this.starGame = starGame;
+    public Background(GameController gameController) {
+        this.gameController = gameController;
         this.textureCosmos = new Texture("bg.png");
         this.textureStar = new Texture("star16.png");
         this.stars = new Star[STAR_COUNT];
