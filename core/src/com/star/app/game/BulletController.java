@@ -2,10 +2,12 @@ package com.star.app.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.star.app.game.helpers.ObjectPool;
+import com.star.app.screen.utils.Assets;
 
 public class BulletController extends ObjectPool<Bullet> {
-    private Texture textureBullet;
+    private TextureRegion textureBullet;
 
     @Override
     protected Bullet newObject() {
@@ -13,7 +15,7 @@ public class BulletController extends ObjectPool<Bullet> {
     }
 
     public BulletController() {
-        this.textureBullet = new Texture("bullet.png");
+        this.textureBullet = Assets.getInstance().getTextureAtlas().findRegion("bullet"); //new Texture("bullet.png");
     }
 
     public void render(SpriteBatch batch){
