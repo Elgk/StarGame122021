@@ -16,15 +16,13 @@ public class GameController {
         this.bulletController = new BulletController();
         this.asteroidController = new AsteroidController(this);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             asteroidController.setup(MathUtils.random( 0, ScreenManager.SCREEN_WIDTH - 200),
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT-100),
-                    MathUtils.random(-200, 200),
-                    MathUtils.random(-200, 200), 1.0f);
+                    MathUtils.random(-100, 100),
+                    MathUtils.random(-100, 100), 1.0f);
         }
     }
-
-
 
     public Hero getHero() {
         return hero;
@@ -51,9 +49,16 @@ public class GameController {
     }
 
     private void checkCollisions() {
+        for (int j = 0; j < asteroidController.getActiveList().size(); j++){
+            Asteroid ad = asteroidController.getActiveList().get(j);
+            if (ad.getHitArea().overlaps(hero.getHitArea())){
+                ad.deactivate();
+                hero.damage(1);
+            }
+        }
         for (int i = 0; i < bulletController.getActiveList().size(); i++) {
            Bullet bullet = bulletController.getActiveList().get(i);
-            for (int j = 0; j < asteroidController.getActiveList().size(); j++) {
+           for (int j = 0; j < asteroidController.getActiveList().size(); j++){
                 Asteroid a = asteroidController.getActiveList().get(j);
                 if (a.getHitArea().contains(bullet.getPosition())) {
                     bullet.deactivate();

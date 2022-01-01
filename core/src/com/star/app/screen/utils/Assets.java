@@ -38,13 +38,12 @@ public class Assets {
             case GAME:
                 assetManager.load("images/game.pack", TextureAtlas.class);
                 createStandartFont(32);
+                createStandartFont(20);
                 assetManager.finishLoading(); // приостанавливает операцию на время загрузки всех ресурсов
                 textureAtlas = assetManager.get("images/game.pack", TextureAtlas.class);
                 break;
         }
     }
-
-
 
     private void createStandartFont(int size) {
         FileHandleResolver resolver = new InternalFileHandleResolver();

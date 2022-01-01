@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.star.app.screen.ScreenManager;
@@ -19,9 +20,23 @@ public class Hero {
     private float fireTimer;
     private int score;
     private int scoreView;
+    private int hpMax; // время жизни объекта
+    private int hp; // текущее время жизни
+    private Circle hitArea; // область столкновения
+
+    private final float BASE_SIZE = 64;
+    private final float BASE_RADIUS = BASE_SIZE / 2;
 
     public int getScoreView() {
         return scoreView;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public Circle getHitArea() {
+        return hitArea;
     }
 
     public Vector2 getVelocity() {
@@ -35,6 +50,13 @@ public class Hero {
         this.velocity = new Vector2(0,0);
         this.angle = 0.0f;
         enginePower = 500.0f;
+        this.hpMax = 100;
+        this.hp = this.hpMax;
+        this.hitArea = new Circle(position.x, position.y, BASE_RADIUS * 0.9f);
+    }
+
+    public void damage(int amount){
+        hp -= amount;
     }
 
     public void render(SpriteBatch batch) {
@@ -44,10 +66,9 @@ public class Hero {
     }
 
     public void update(float dt) {
-
         fireTimer += dt;
         if (scoreView < score){
-            scoreView += 2000 * dt;
+            scoreView += 1000 * dt;
             if (scoreView > score){
                 scoreView = score;
             }
@@ -70,7 +91,6 @@ public class Hero {
             }
         }
 
-
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             angle += 180.0f * dt;
         }
@@ -80,14 +100,11 @@ public class Hero {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             velocity.x += MathUtils.cosDeg(angle) * enginePower * dt;
             velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
-
-
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
             velocity.x -= MathUtils.cosDeg(angle) * enginePower / 2 * dt;
             velocity.y -= MathUtils.sinDeg(angle) * enginePower / 2 * dt;
         }
-
 
         position.mulAdd(velocity, dt);
 
@@ -113,7 +130,7 @@ public class Hero {
             position.y = ScreenManager.SCREEN_HEIGHT - 32;
             velocity.y *= -0.5f;
         }
-
+        hitArea.setPosition(position);
     }
 
     public void addScore(int amount) {
