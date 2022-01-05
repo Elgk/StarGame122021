@@ -1,6 +1,7 @@
 package com.star.app.game;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.star.app.screen.ScreenManager;
 
 public class GameController {
@@ -9,12 +10,16 @@ public class GameController {
     private Background background;
     private BulletController bulletController;
     private AsteroidController asteroidController;
+    private ParticleController particleController;
+    private Vector2 tempVec;
 
     public GameController() {
         this.background = new Background(this);
         this.hero = new Hero(this);
-        this.bulletController = new BulletController();
+        this.bulletController = new BulletController(this);
         this.asteroidController = new AsteroidController(this);
+        this.particleController = new ParticleController();
+        this.tempVec = new Vector2();
 
         for (int i = 0; i < 3; i++) {
             asteroidController.setup(MathUtils.random( 0, ScreenManager.SCREEN_WIDTH - 200),
@@ -40,11 +45,16 @@ public class GameController {
         return asteroidController;
     }
 
+    public ParticleController getParticleController() {
+        return particleController;
+    }
+
     public void update(float dt){
         background.update(dt);
         hero.update(dt);
         asteroidController.update(dt);
         bulletController.update(dt);
+        particleController.update(dt);
         checkCollisions();
     }
 
@@ -52,8 +62,21 @@ public class GameController {
         for (int j = 0; j < asteroidController.getActiveList().size(); j++){
             Asteroid ad = asteroidController.getActiveList().get(j);
             if (ad.getHitArea().overlaps(hero.getHitArea())){
-                ad.deactivate();
-                hero.damage(1);
+                float dst = ad.getPosition().dst(hero.getPosition());
+                float halfOverLen = (ad.getHitArea().radius + hero.getHitArea().radius - dst)/ 2; // вычисление половины расстояния перекрытия радиусов при столкновении
+                tempVec.set(hero.getPosition()).sub(ad.getPosition()).nor(); // вычисляется разность двух векторов и нормализуется (приводится к единице)
+                // оба объекта отталкиваются друг от друга в противоположных направлениях
+                hero.getPosition().mulAdd(tempVec, halfOverLen);
+                ad.getPosition().mulAdd(tempVec, -halfOverLen);
+                // определяется скорость разлетания в зависимости от размера ( массы) объекта
+                float sumScl = hero.getHitArea().radius + ad.getHitArea().radius;
+                hero.getVelocity().mulAdd(tempVec, ad.getHitArea().radius / sumScl * 100);
+                ad.getVelocity().mulAdd(tempVec, hero.getHitArea().radius / sumScl + 100);
+
+                if (ad.takeDamage(2)){
+                    hero.addScore(ad.getHpMax() * 50);
+                }
+                hero.damage(2);
             }
         }
         for (int i = 0; i < bulletController.getActiveList().size(); i++) {
@@ -61,6 +84,13 @@ public class GameController {
            for (int j = 0; j < asteroidController.getActiveList().size(); j++){
                 Asteroid a = asteroidController.getActiveList().get(j);
                 if (a.getHitArea().contains(bullet.getPosition())) {
+
+                       particleController.setup(bullet.getPosition().x + MathUtils.random(-4, 4), bullet.getPosition().y + MathUtils.random(-4, 4),
+                                bullet.getVelocity().x * -0.3f + MathUtils.random(-30, 30), bullet.getVelocity().y * -0.3f + MathUtils.random(-30, 30),
+                                0.3f, 2.2f, 1.2f,
+                                1.0f, 1.0f, 1.0f, 1.0f,
+                                0.0f, 0.0f, 1.0f, 0.0f);
+
                     bullet.deactivate();
                     if (a.takeDamage(1)) {
                         hero.addScore(a.getHpMax() * 100);
