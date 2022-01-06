@@ -4,6 +4,12 @@ public class ScreenManager {
     public enum ScreenType{
         GAME
     }
+
+    public enum BonusType{
+        PHARMACY,
+        AMMO,
+        COIN
+    }
     public static final int SCREEN_WIDTH = 1280;
     public static final int SCREEN_HEIGHT = 720;
 }

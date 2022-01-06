@@ -1,0 +1,54 @@
+
+images1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+asteroid
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+coins
+  rotate: false
+  xy: 260, 2
+  size: 75, 75
+  orig: 75, 75
+  offset: 0, 0
+  index: -1
+ammo
+  rotate: false
+  xy: 337, 2
+  size: 64, 68
+  orig: 64, 68
+  offset: 0, 0
+  index: -1
+ship
+  rotate: false
+  xy: 403, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+pharmacy
+  rotate: false
+  xy: 260, 79
+  size: 75, 45
+  orig: 75, 45
+  offset: 0, 0
+  index: -1
+bullet
+  rotate: false
+  xy: 469, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+star16
+  rotate: false
+  xy: 469, 36
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1

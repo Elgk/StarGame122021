@@ -12,6 +12,7 @@ public class GameController {
     private AsteroidController asteroidController;
     private ParticleController particleController;
     private Vector2 tempVec;
+    private BonusController bonusController;
 
     public GameController() {
         this.background = new Background(this);
@@ -20,8 +21,9 @@ public class GameController {
         this.asteroidController = new AsteroidController(this);
         this.particleController = new ParticleController();
         this.tempVec = new Vector2();
+        this.bonusController = new BonusController();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             asteroidController.setup(MathUtils.random( 0, ScreenManager.SCREEN_WIDTH - 200),
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT-100),
                     MathUtils.random(-100, 100),
@@ -49,16 +51,22 @@ public class GameController {
         return particleController;
     }
 
+    public BonusController getBonusController() {
+        return bonusController;
+    }
+
     public void update(float dt){
         background.update(dt);
         hero.update(dt);
         asteroidController.update(dt);
         bulletController.update(dt);
         particleController.update(dt);
+        bonusController.update(dt);
         checkCollisions();
     }
 
     private void checkCollisions() {
+
         for (int j = 0; j < asteroidController.getActiveList().size(); j++){
             Asteroid ad = asteroidController.getActiveList().get(j);
             if (ad.getHitArea().overlaps(hero.getHitArea())){
@@ -73,12 +81,46 @@ public class GameController {
                 hero.getVelocity().mulAdd(tempVec, ad.getHitArea().radius / sumScl * 100);
                 ad.getVelocity().mulAdd(tempVec, hero.getHitArea().radius / sumScl + 100);
 
+                int percent;
+                if (ad.getScale() > 0.6f){
+                    percent = 10;
+                }else if (ad.getScale() > 0.35f){
+                    percent = 20;
+                }else {
+                    percent = 30;
+                }
+                if (MathUtils.random(0, percent) == 0){
+                    bonusController.setup(ScreenManager.BonusType.PHARMACY, ad.getPosition().x, ad.getPosition().y,
+                            MathUtils.cosDeg(ad.getAngle()) * 30.0f + ad.getVelocity().x,
+                            MathUtils.sinDeg(ad.getAngle()) * 30.0f + ad.getVelocity().y);
+                    bonusController.setup(ScreenManager.BonusType.AMMO, ad.getPosition().x, ad.getPosition().y,
+                            MathUtils.cosDeg(ad.getAngle() + 60) * 50.0f + ad.getVelocity().x,
+                            MathUtils.sinDeg(ad.getAngle() + 60) * 50.0f + ad.getVelocity().y);
+                }
+
                 if (ad.takeDamage(2)){
                     hero.addScore(ad.getHpMax() * 50);
                 }
                 hero.damage(2);
             }
         }
+
+        for (int k = 0; k < bonusController.getActiveList().size(); k++) {
+            Bonus bn = bonusController.getActiveList().get(k);
+            if (hero.getHitArea().overlaps(bn.getHitArea())){
+                bn.deactivate();
+                switch (bn.getType()){
+                    case PHARMACY:
+                        hero.addHp(20);
+                        break;
+                    case AMMO:
+                        hero.getCurrentWeapon().addBullets(100);
+                        break;
+                }
+            }
+
+        }
+
         for (int i = 0; i < bulletController.getActiveList().size(); i++) {
            Bullet bullet = bulletController.getActiveList().get(i);
            for (int j = 0; j < asteroidController.getActiveList().size(); j++){
