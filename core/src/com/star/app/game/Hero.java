@@ -47,6 +47,10 @@ public class Hero {
         return angle;
     }
 
+    public Weapon getCurrentWeapon() {
+        return currentWeapon;
+    }
+
     public Hero(GameController gameController) {
         this.gameController = gameController;
         this.texture = Assets.getInstance().getTextureAtlas().findRegion("ship"); // new Texture("ship.png");
@@ -207,5 +211,12 @@ public class Hero {
 
     public void addScore(int amount) {
         score += amount;
+    }
+
+    public void  addHp(int value){
+        hp += value;
+        if (hp >= hpMax){
+            hp = hpMax;
+        }
     }
 }

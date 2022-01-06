@@ -69,6 +69,10 @@ public class Asteroid implements Poolable {
         return hitArea;
     }
 
+    public float getScale() {
+        return scale;
+    }
+
     public void activate(float x, float y, float vx, float vy, float scale){
         position.set(x,y);
         velocity.set(vx, vy);
