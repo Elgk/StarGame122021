@@ -27,6 +27,7 @@ public class Hero {
     private Circle hitArea; // область столкновения
     private StringBuilder sb;
     private Weapon currentWeapon;
+    private int money;
 
     private final float BASE_SIZE = 64;
     private final float BASE_RADIUS = BASE_SIZE / 2;
@@ -75,7 +76,8 @@ public class Hero {
         sb.setLength(0);
         sb.append("SCORE ").append(scoreView).append("\n");
         sb.append("VIABILITY ").append(hp).append(" / ").append(hpMax).append("\n");
-        sb.append("BULLETS ").append(currentWeapon.getCurBullets()).append(" / ").append(currentWeapon.getMaxBullets());
+        sb.append("BULLETS ").append(currentWeapon.getCurBullets()).append(" / ").append(currentWeapon.getMaxBullets()).append("\n");
+        sb.append("MONEY ").append(money).append("\n");
         font.draw(batch, sb, 20, 700);
     }
 
@@ -217,6 +219,20 @@ public class Hero {
         hp += value;
         if (hp >= hpMax){
             hp = hpMax;
+        }
+    }
+
+    public void consume(PowerUp up) {
+        switch (up.getType()){
+            case MEDKIT:
+                addHp(up.getPower());
+                break;
+            case AMMOS:
+                currentWeapon.addAmmos(up.getPower());
+                break;
+            case MONEY:
+                money += up.getPower();
+                break;
         }
     }
 }

@@ -12,7 +12,7 @@ public class GameController {
     private AsteroidController asteroidController;
     private ParticleController particleController;
     private Vector2 tempVec;
-    private BonusController bonusController;
+    private PowerUpsController powerUpsController;
 
     public GameController() {
         this.background = new Background(this);
@@ -21,7 +21,7 @@ public class GameController {
         this.asteroidController = new AsteroidController(this);
         this.particleController = new ParticleController();
         this.tempVec = new Vector2();
-        this.bonusController = new BonusController();
+        this.powerUpsController = new PowerUpsController(this);
 
         for (int i = 0; i < 2; i++) {
             asteroidController.setup(MathUtils.random( 0, ScreenManager.SCREEN_WIDTH - 200),
@@ -51,8 +51,8 @@ public class GameController {
         return particleController;
     }
 
-    public BonusController getBonusController() {
-        return bonusController;
+    public PowerUpsController getPowerUpsController() {
+        return powerUpsController;
     }
 
     public void update(float dt){
@@ -61,7 +61,7 @@ public class GameController {
         asteroidController.update(dt);
         bulletController.update(dt);
         particleController.update(dt);
-        bonusController.update(dt);
+        powerUpsController.update(dt);
         checkCollisions();
     }
 
@@ -81,23 +81,6 @@ public class GameController {
                 hero.getVelocity().mulAdd(tempVec, ad.getHitArea().radius / sumScl * 100);
                 ad.getVelocity().mulAdd(tempVec, hero.getHitArea().radius / sumScl + 100);
 
-                int percent;
-                if (ad.getScale() > 0.6f){
-                    percent = 10;
-                }else if (ad.getScale() > 0.35f){
-                    percent = 20;
-                }else {
-                    percent = 30;
-                }
-                if (MathUtils.random(0, percent) == 0){
-                    bonusController.setup(ScreenManager.BonusType.PHARMACY, ad.getPosition().x, ad.getPosition().y,
-                            MathUtils.cosDeg(ad.getAngle()) * 30.0f + ad.getVelocity().x,
-                            MathUtils.sinDeg(ad.getAngle()) * 30.0f + ad.getVelocity().y);
-                    bonusController.setup(ScreenManager.BonusType.AMMO, ad.getPosition().x, ad.getPosition().y,
-                            MathUtils.cosDeg(ad.getAngle() + 60) * 50.0f + ad.getVelocity().x,
-                            MathUtils.sinDeg(ad.getAngle() + 60) * 50.0f + ad.getVelocity().y);
-                }
-
                 if (ad.takeDamage(2)){
                     hero.addScore(ad.getHpMax() * 50);
                 }
@@ -105,21 +88,6 @@ public class GameController {
             }
         }
 
-        for (int k = 0; k < bonusController.getActiveList().size(); k++) {
-            Bonus bn = bonusController.getActiveList().get(k);
-            if (hero.getHitArea().overlaps(bn.getHitArea())){
-                bn.deactivate();
-                switch (bn.getType()){
-                    case PHARMACY:
-                        hero.addHp(20);
-                        break;
-                    case AMMO:
-                        hero.getCurrentWeapon().addBullets(100);
-                        break;
-                }
-            }
-
-        }
 
         for (int i = 0; i < bulletController.getActiveList().size(); i++) {
            Bullet bullet = bulletController.getActiveList().get(i);
@@ -134,11 +102,23 @@ public class GameController {
                                 0.0f, 0.0f, 1.0f, 0.0f);
 
                     bullet.deactivate();
-                    if (a.takeDamage(1)) {
+                    if (a.takeDamage(hero.getCurrentWeapon().getDamage())) {
                         hero.addScore(a.getHpMax() * 100);
+                        for (int k = 0; k < 3; k++) {
+                            powerUpsController.setup(a.getPosition().x, a.getPosition().y, a.getScale() * 0.25f);
+                        }
                     }
                     break;
                 }
+            }
+        }
+
+        for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
+            PowerUp up = powerUpsController.getActiveList().get(i);
+            if (hero.getHitArea().contains(up.getPosition())){
+                up.deactivate();
+                particleController.getEffectBuilder().takePowerUpEffect(up.getPosition().x, up.getPosition().y);
+                hero.consume(up);
             }
         }
 

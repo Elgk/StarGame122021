@@ -1,8 +1,17 @@
 package com.star.app.screen;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class AbstractScreen implements Screen {
+    protected SpriteBatch batch;
+
+    public AbstractScreen(SpriteBatch batch) {
+        this.batch = batch;
+    }
+
     @Override
     public void show() {
 
@@ -15,7 +24,7 @@ public class AbstractScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        ScreenManager.getInstance().resize(width, height);
     }
 
     @Override

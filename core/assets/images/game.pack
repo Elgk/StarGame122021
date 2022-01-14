@@ -10,44 +10,44 @@ asteroid
   orig: 256, 256
   offset: 0, 0
   index: -1
-coins
+powerups
   rotate: false
-  xy: 260, 2
-  size: 75, 75
-  orig: 75, 75
+  xy: 2, 260
+  size: 360, 240
+  orig: 360, 240
   offset: 0, 0
   index: -1
-ammo
+simpleButton
   rotate: false
-  xy: 337, 2
-  size: 64, 68
-  orig: 64, 68
+  xy: 2, 502
+  size: 320, 80
+  orig: 320, 80
   offset: 0, 0
   index: -1
 ship
   rotate: false
-  xy: 403, 2
+  xy: 260, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-pharmacy
+smButton
   rotate: false
-  xy: 260, 79
-  size: 75, 45
-  orig: 75, 45
+  xy: 326, 2
+  size: 120, 32
+  orig: 120, 32
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 469, 2
+  xy: 448, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star16
   rotate: false
-  xy: 469, 36
+  xy: 326, 36
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
