@@ -1,7 +1,10 @@
 package com.star.app.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.star.app.screen.GameOverScreen;
 import com.star.app.screen.ScreenManager;
 
 public class GameController {
@@ -12,6 +15,7 @@ public class GameController {
     private AsteroidController asteroidController;
     private ParticleController particleController;
     private Vector2 tempVec;
+    private boolean pause;
     private PowerUpsController powerUpsController;
 
     public GameController() {
@@ -22,6 +26,7 @@ public class GameController {
         this.particleController = new ParticleController();
         this.tempVec = new Vector2();
         this.powerUpsController = new PowerUpsController(this);
+        this.pause = false;
 
         for (int i = 0; i < 2; i++) {
             asteroidController.setup(MathUtils.random( 0, ScreenManager.SCREEN_WIDTH - 200),
@@ -56,13 +61,22 @@ public class GameController {
     }
 
     public void update(float dt){
-        background.update(dt);
-        hero.update(dt);
-        asteroidController.update(dt);
-        bulletController.update(dt);
-        particleController.update(dt);
-        powerUpsController.update(dt);
-        checkCollisions();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
+            pause = !pause;
+        }
+        if (!pause){
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+                ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.MENU);
+            }
+            background.update(dt);
+            hero.update(dt);
+            asteroidController.update(dt);
+            bulletController.update(dt);
+            particleController.update(dt);
+            powerUpsController.update(dt);
+            checkCollisions();
+        }
+
     }
 
     private void checkCollisions() {
@@ -85,6 +99,9 @@ public class GameController {
                     hero.addScore(ad.getHpMax() * 50);
                 }
                 hero.damage(2);
+                if (hero.getHp() <= 0){
+                    ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER);
+                }
             }
         }
 

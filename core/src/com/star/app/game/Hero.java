@@ -52,6 +52,14 @@ public class Hero {
         return currentWeapon;
     }
 
+    public int getHp() {
+        return hp;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
     public Hero(GameController gameController) {
         this.gameController = gameController;
         this.texture = Assets.getInstance().getTextureAtlas().findRegion("ship"); // new Texture("ship.png");

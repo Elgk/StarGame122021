@@ -13,6 +13,10 @@ public class GameScreen extends AbstractScreen{
         super(batch);
     }
 
+    public GameController getGameController() {
+        return gameController;
+    }
+
     @Override
     public void show() {
         Assets.getInstance().loadAssets(ScreenManager.ScreenType.GAME); // загрузка ресурсов (рисунки, музыка, шрифты)
