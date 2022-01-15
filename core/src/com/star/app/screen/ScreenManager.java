@@ -11,7 +11,8 @@ public class ScreenManager {
 
     public enum ScreenType{
         GAME,
-        MENU
+        MENU,
+        GAMEOVER
     }
 
     public enum BonusType{
@@ -27,6 +28,7 @@ public class ScreenManager {
     private LoadingScreen loadingScreen;
     private GameScreen gameScreen;
     private MenuScreen menuScreen;
+    private GameOverScreen gameOverScreen;
     private Screen targetScreen;
     private Viewport viewport;  // класс, отвечающий за прорисовку в соответствии с масштабом экрана:
     // - либо растягивает рисунки на всю область экрана, либо  сохраняет пропорции рисунков в соответствии с размерами экрана, тогда обрезает границы
@@ -51,13 +53,14 @@ public class ScreenManager {
         this.loadingScreen = new LoadingScreen(batch);
         this.viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT);
         this.menuScreen = new MenuScreen(batch);
+        this.gameOverScreen = new GameOverScreen(batch);
     }
 
     public void goToTarget() {
         game.setScreen(targetScreen);
     }
 
-    public void chageScreen(ScreenType type){
+    public void changeScreen(ScreenType type){
         Screen screen = game.getScreen();
         Assets.getInstance().clear();
         if (screen != null){
@@ -71,6 +74,11 @@ public class ScreenManager {
                     break;
                 case MENU:
                     targetScreen = menuScreen;
+                    Assets.getInstance().loadAssets(type);
+                    break;
+                case GAMEOVER:
+                    gameOverScreen.setScore(gameScreen.getGameController().getHero().getScore());
+                    targetScreen = gameOverScreen;
                     Assets.getInstance().loadAssets(type);
                     break;
         }
