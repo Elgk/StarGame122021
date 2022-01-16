@@ -10,9 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.star.app.game.Background;
 import com.star.app.screen.utils.Assets;
 
 public class MenuScreen extends AbstractScreen{
+    private Background background;
     private BitmapFont font72;
     private BitmapFont font24;
     private Stage stage; // сцена, управляет компонентами (кнопки и т.п.), уже содержит все компоненты
@@ -23,6 +25,7 @@ public class MenuScreen extends AbstractScreen{
 
     @Override
     public void show() {
+        this.background = new Background(null);
         this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
         this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf");
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
@@ -45,7 +48,7 @@ public class MenuScreen extends AbstractScreen{
         btnNewGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                ScreenManager.getInstance().chageScreen(ScreenManager.ScreenType.GAME);
+                ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAME);
             }
         });
         btnExitGame.addListener(new ChangeListener() {
@@ -60,6 +63,7 @@ public class MenuScreen extends AbstractScreen{
     }
 
     public void update(float dt){
+        background.update(dt);
         stage.act(dt); // перерасчет координат для всех элементов
     }
 
@@ -68,6 +72,7 @@ public class MenuScreen extends AbstractScreen{
         update(delta);
         ScreenUtils.clear(0,0,0,1);
         batch.begin();
+        background.render(batch);
         font72.draw(batch, "StarGame 2022", 0, 600, 1280, 1, false); // halign - выравнивание или можно Align.center
         batch.end();
         stage.draw(); // перерисовка всех элементов
@@ -75,6 +80,7 @@ public class MenuScreen extends AbstractScreen{
 
     @Override
     public void dispose() {
-
+        background.dispose();
+        stage.dispose();
     }
 }

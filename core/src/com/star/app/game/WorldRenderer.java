@@ -28,5 +28,6 @@ public class WorldRenderer {
         gameController.getHero().renderGUI(batch, font32);
         gameController.getPowerUpsController().render(batch);
         batch.end();
+        gameController.getStage().draw();
     }
 }

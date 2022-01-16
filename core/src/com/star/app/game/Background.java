@@ -12,6 +12,7 @@ import com.star.app.screen.utils.Assets;
 import static com.star.app.screen.ScreenManager.*;
 
 public class Background {
+
     private class Star {
         Vector2 position;
         Vector2 velocity;
@@ -25,8 +26,13 @@ public class Background {
         }
 
         public void update(float dt) {
-            position.x += (velocity.x - gameController.getHero().getVelocity().x * 0.1f) * dt;
-            position.y += (velocity.y - gameController.getHero().getVelocity().y * 0.1f) * dt;
+            if (gameController != null){
+                position.x += (velocity.x - gameController.getHero().getVelocity().x * 0.1f) * dt;
+                position.y += (velocity.y - gameController.getHero().getVelocity().y * 0.1f) * dt;
+            }else {
+                position.mulAdd(velocity, dt);
+            }
+
 
             if (position.x < -200) {
                 position.x = ScreenManager.SCREEN_WIDTH + 200;
@@ -73,5 +79,9 @@ public class Background {
         for (int i = 0; i < stars.length; i++) {
             stars[i].update(dt);
         }
+    }
+
+    public void dispose() {
+        textureCosmos.dispose();
     }
 }

@@ -13,6 +13,19 @@ import com.star.app.screen.ScreenManager;
 import com.star.app.screen.utils.Assets;
 
 public class Hero {
+    public enum Skill{
+        HP_MAX(10, 10),
+        HP(20, 10),
+        WEAPON(100, 1);
+
+        int cost;
+        int power;
+
+        Skill(int cost, int power) {
+            this.cost = cost;
+            this.power = power;
+        }
+    }
     private GameController gameController;
     private TextureRegion texture;
     private Vector2 position;
@@ -28,6 +41,9 @@ public class Hero {
     private StringBuilder sb;
     private Weapon currentWeapon;
     private int money;
+    private Shop shop;
+    private Weapon[] weapons;
+    private int weaponNum;
 
     private final float BASE_SIZE = 64;
     private final float BASE_RADIUS = BASE_SIZE / 2;
@@ -52,12 +68,16 @@ public class Hero {
         return currentWeapon;
     }
 
-    public int getHp() {
-        return hp;
+    public Shop getShop() {
+        return shop;
     }
 
     public int getScore() {
         return score;
+    }
+
+    public int getMoney() {
+        return money;
     }
 
     public Hero(GameController gameController) {
@@ -69,14 +89,19 @@ public class Hero {
         enginePower = 500.0f;
         this.hpMax = 100;
         this.hp = this.hpMax;
+        this.money = 50;
         this.hitArea = new Circle(position, BASE_RADIUS * 0.9f);
         this.sb = new StringBuilder();
-        this.currentWeapon = new Weapon(gameController, this, "Laser", 0.1f, 1, 600.0f, 300,
-                new Vector3[]{
-                        new Vector3(28, 0, 0),
-                        new Vector3(28, 90, 20),
-                        new Vector3(28, -90, -20)
-                });
+        this.shop = new Shop(this);
+        this.weaponNum = 0;
+        createWeapos();
+        this.currentWeapon = weapons[weaponNum];
+//        this.currentWeapon = new Weapon(gameController, this, "Laser", 0.1f, 1, 600.0f, 300,
+//                new Vector3[]{
+//                        new Vector3(28, 0, 0),
+//                        new Vector3(28, 90, 20),
+//                        new Vector3(28, -90, -20)
+//                });
     }
 
 
@@ -93,6 +118,43 @@ public class Hero {
         hp -= amount;
     }
 
+    public boolean isAlive(){
+        return  hp > 0;
+    }
+
+    public boolean isMoneyEnough(int value){
+        return money >= value;
+    }
+
+    public void decreaseMoney(int value){
+        money -= value;
+    }
+
+    public boolean upgrade(Skill skill){
+        switch (skill){
+            case HP_MAX:
+                hpMax += skill.power;
+                return true;
+            case HP:
+                if (hp + skill.power <= hpMax){
+                    hp += skill.power;
+                    return true;
+                }
+                break;
+            case WEAPON:
+                if (weaponNum < weapons.length -1 ){
+                    weaponNum ++;
+                    currentWeapon = weapons[weaponNum];
+                    return  true;
+                }
+        }
+        return false;
+    }
+
+    public void continueGame(){
+        gameController.setPause(false);
+    }
+
     public void render(SpriteBatch batch) {
         batch.draw(texture, position.x - 32, position.y - 32, 32, 32,
                 64, 64, 1, 1,
@@ -105,6 +167,11 @@ public class Hero {
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             tryToFire();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.P)) {
+            gameController.setPause(true);
+            shop.setVisible(true);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -228,6 +295,7 @@ public class Hero {
         if (hp >= hpMax){
             hp = hpMax;
         }
+
     }
 
     public void consume(PowerUp up) {
@@ -243,4 +311,42 @@ public class Hero {
                 break;
         }
     }
+
+    private void createWeapos(){
+        weapons = new Weapon[]{
+                new Weapon(gameController, this, "Laser", 0.2f, 1, 300.0f, 300,
+                        new Vector3[]{
+                                new Vector3(28, 90, 0),
+                                new Vector3(28, -90, 0)
+                        }),
+                new Weapon(gameController, this, "Laser", 0.2f, 1, 600.0f, 500,
+                        new Vector3[]{
+                                new Vector3(28, 0, 0),
+                                new Vector3(28, 90, 20),
+                                new Vector3(28, -90, -20)
+                        }),
+                new Weapon(gameController, this, "Laser", 0.1f, 1, 600.0f, 1000,
+                        new Vector3[]{
+                                new Vector3(28, 0, 0),
+                                new Vector3(28, 90, 20),
+                                new Vector3(28, -90, -20)
+                        }),
+                new Weapon(gameController, this, "Laser", 0.1f, 2, 600.0f, 1000,
+                        new Vector3[]{
+                                new Vector3(28, 90, 0),
+                                new Vector3(28, -90, 0),
+                                new Vector3(28, 90, 15),
+                                new Vector3(28, -90, -15)
+                        }),
+                new Weapon(gameController, this, "Laser", 0.1f, 3, 600.0f, 1500,
+                        new Vector3[]{
+                                new Vector3(28, 0, 0),
+                                new Vector3(28, 90, 10),
+                                new Vector3(28, 90, 20),
+                                new Vector3(28, -90, -10),
+                                new Vector3(28, -90, -20)
+                        })
+        };
+    }
+
 }

@@ -38,8 +38,7 @@ public class Assets {
             case GAME:
                 assetManager.load("images/game.pack", TextureAtlas.class);
                 createStandartFont(32);
-               // createStandartFont(20);
-               // assetManager.finishLoading(); // приостанавливает операцию на время загрузки всех ресурсов
+                createStandartFont(24);
                 break;
             case MENU:
                 assetManager.load("images/game.pack", TextureAtlas.class);
@@ -49,7 +48,7 @@ public class Assets {
             case GAMEOVER:
                 assetManager.load("images/game.pack", TextureAtlas.class);
                 createStandartFont(72);
-                createStandartFont(32);
+                createStandartFont(48);
                 createStandartFont(24);
                 break;
         }
