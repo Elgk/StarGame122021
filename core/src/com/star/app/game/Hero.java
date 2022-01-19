@@ -44,9 +44,14 @@ public class Hero {
     private Shop shop;
     private Weapon[] weapons;
     private int weaponNum;
+    private float distanceLimit;
 
     private final float BASE_SIZE = 64;
     private final float BASE_RADIUS = BASE_SIZE / 2;
+
+    public float getDistanceLimit() {
+        return distanceLimit;
+    }
 
     public Vector2 getPosition() {
         return position;
@@ -96,6 +101,7 @@ public class Hero {
         this.weaponNum = 0;
         createWeapos();
         this.currentWeapon = weapons[weaponNum];
+        this.distanceLimit = 100.0f;
 //        this.currentWeapon = new Weapon(gameController, this, "Laser", 0.1f, 1, 600.0f, 300,
 //                new Vector3[]{
 //                        new Vector3(28, 0, 0),

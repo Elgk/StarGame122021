@@ -20,6 +20,7 @@ public class GameController {
     private boolean pause;
     private PowerUpsController powerUpsController;
     private Stage stage;
+    private int gameLevel;
 
     public GameController(SpriteBatch batch) {
         this.background = new Background(this);
@@ -34,13 +35,9 @@ public class GameController {
         Gdx.input.setInputProcessor(stage);
         stage.addActor(hero.getShop());
         this.pause = false;
+        this.gameLevel = 0;
+        createAsteroid();
 
-        for (int i = 0; i < 2; i++) {
-            asteroidController.setup(MathUtils.random( 0, ScreenManager.SCREEN_WIDTH - 200),
-                    MathUtils.random(0, ScreenManager.SCREEN_HEIGHT-100),
-                    MathUtils.random(-100, 100),
-                    MathUtils.random(-100, 100), 1.0f);
-        }
     }
 
     public Hero getHero() {
@@ -67,12 +64,26 @@ public class GameController {
         return powerUpsController;
     }
 
+    public int getGameLevel() {
+        return gameLevel;
+    }
+
     public void setPause(boolean pause) {
         this.pause = pause;
     }
 
     public Stage getStage() {
         return stage;
+    }
+
+    private void createAsteroid(){
+        for (int i = 0; i < gameLevel + 2; i++) {
+            asteroidController.setup(MathUtils.random( 0, ScreenManager.SCREEN_WIDTH - 200),
+                    MathUtils.random(0, ScreenManager.SCREEN_HEIGHT-100),
+                    MathUtils.random(-25, 25),
+                    MathUtils.random(-25, 25), 1.0f);
+        }
+
     }
 
     public void update(float dt){
@@ -90,7 +101,10 @@ public class GameController {
         if (!hero.isAlive()) {
             ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER, hero);
         }
-
+        if (asteroidController.getActiveList().isEmpty()){
+            gameLevel ++;
+            createAsteroid();
+        }
 
     }
 
@@ -108,12 +122,12 @@ public class GameController {
                 // определяется скорость разлетания в зависимости от размера ( массы) объекта
                 float sumScl = hero.getHitArea().radius + ad.getHitArea().radius;
                 hero.getVelocity().mulAdd(tempVec, ad.getHitArea().radius / sumScl * 100);
-                ad.getVelocity().mulAdd(tempVec, hero.getHitArea().radius / sumScl + 100);
+                ad.getVelocity().mulAdd(tempVec, hero.getHitArea().radius / sumScl * 100);
 
                 if (ad.takeDamage(2)){
                     hero.addScore(ad.getHpMax() * 50);
                 }
-                hero.damage(2);
+                hero.damage(ad.getDamagePower());
             }
         }
 
@@ -144,6 +158,11 @@ public class GameController {
 
         for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
             PowerUp up = powerUpsController.getActiveList().get(i);
+            float dst = hero.getPosition().dst(up.getPosition());
+            if ( dst <= hero.getDistanceLimit()){
+                tempVec.set(hero.getPosition()).sub(up.getPosition()).nor();
+                up.getVelocity().mulAdd(tempVec, 100);
+            }
             if (hero.getHitArea().contains(up.getPosition())){
                 up.deactivate();
                 particleController.getEffectBuilder().takePowerUpEffect(up.getPosition().x, up.getPosition().y, up.getType());

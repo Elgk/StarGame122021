@@ -21,6 +21,7 @@ public class Asteroid implements Poolable {
     private int hp; // время жизни астероида
     private Circle hitArea;
     private float scale;
+    private int damagePower;
 
     private final float BASE_SIZE = 256;
     private final float BASE_RADIUS = BASE_SIZE / 2;
@@ -73,14 +74,23 @@ public class Asteroid implements Poolable {
         return scale;
     }
 
+    public int getDamagePower() {
+        return damagePower;
+    }
+
     public void activate(float x, float y, float vx, float vy, float scale){
         position.set(x,y);
         velocity.set(vx, vy);
         angle = MathUtils.random(0.0f, 360.0f);
         rotationSpeed = MathUtils.random(-180.0f, 180.0f);
+
         hpMax = (int) (4 * scale);
+        if (gameController.getGameLevel() > 0) {
+            hpMax += gameController.getGameLevel() * 2;
+        }
         hp = hpMax;
         this.scale = scale;
+        this.damagePower = 2 + gameController.getGameLevel();
         hitArea.setPosition(position);
         hitArea.setRadius(BASE_RADIUS * scale * 0.9f);
         active = true;
