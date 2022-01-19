@@ -24,9 +24,9 @@ public class WorldRenderer {
         gameController.getAsteroidController().render(batch);
         gameController.getBulletController().render(batch);
         gameController.getParticleController().render(batch);
+        gameController.getPowerUpsController().render(batch);
         gameController.getHero().render(batch);
         gameController.getHero().renderGUI(batch, font32);
-        gameController.getPowerUpsController().render(batch);
         batch.end();
         gameController.getStage().draw();
     }

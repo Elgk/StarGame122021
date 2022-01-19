@@ -25,6 +25,12 @@ public class PowerUp implements Poolable {
     private Type type;
     private GameController gameController;
 
+    private Vector2 tempVec;
+
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
     @Override
     public boolean isActive() {
         return active;
@@ -51,6 +57,7 @@ public class PowerUp implements Poolable {
         this.position = new Vector2(0,0);
         this.velocity = new Vector2(0,0);
         this.active = false;
+        this.tempVec = new Vector2();
     }
 
     public void activate(Type type, float x, float y, int power){
