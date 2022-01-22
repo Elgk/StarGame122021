@@ -1,6 +1,7 @@
 package com.star.app.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -18,6 +19,7 @@ public class MenuScreen extends AbstractScreen{
     private BitmapFont font72;
     private BitmapFont font24;
     private Stage stage; // сцена, управляет компонентами (кнопки и т.п.), уже содержит все компоненты
+    private Music music;
 
     public MenuScreen(SpriteBatch batch){
         super(batch);
@@ -29,6 +31,10 @@ public class MenuScreen extends AbstractScreen{
         this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
         this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf");
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
+
+        this.music = Assets.getInstance().getAssetManager().get("audio/music.mp3");
+        this.music.setLooping(true);
+        this.music.play();
 
         Gdx.input.setInputProcessor(stage);// InputProcessor  - управляет событиями клавиатуры, мышки и др., здесь stage перехватывает все события
 

@@ -91,6 +91,20 @@ public class Shop extends Group {
         btnWeapon.setPosition(20,100);
         this.addActor(btnWeapon);
 
+        final TextButton btnMagnet = new TextButton("Magnet", textButtonStyle);
+        btnMagnet.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (hero.isMoneyEnough(Hero.Skill.MAGNET.cost)){
+                    if (hero.upgrade(Hero.Skill.MAGNET)){
+                        hero.decreaseMoney(Hero.Skill.MAGNET.cost);
+                    }
+                }
+            }
+        });
+        btnMagnet.setPosition(120,100);
+        this.addActor(btnMagnet);
+
         this.setPosition(20,20);
         this.setVisible(false);
         skin.dispose();

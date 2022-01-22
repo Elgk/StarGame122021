@@ -84,10 +84,8 @@ public class Asteroid implements Poolable {
         angle = MathUtils.random(0.0f, 360.0f);
         rotationSpeed = MathUtils.random(-180.0f, 180.0f);
 
-        hpMax = (int) (4 * scale);
-        if (gameController.getGameLevel() > 0) {
-            hpMax += gameController.getGameLevel() * 2;
-        }
+        hpMax = (int) (4 * scale + gameController.getGameLevel()*2);
+
         hp = hpMax;
         this.scale = scale;
         this.damagePower = 2 + gameController.getGameLevel();
