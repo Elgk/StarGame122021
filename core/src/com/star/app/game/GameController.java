@@ -23,6 +23,7 @@ public class GameController {
     private boolean pause;
     private PowerUpsController powerUpsController;
     private InfoController infoController;
+    private BotController botController;
     private Stage stage;
     private int gameLevel;
     private float timer;
@@ -38,6 +39,7 @@ public class GameController {
         this.tempVec = new Vector2();
         this.powerUpsController = new PowerUpsController(this);
         this.infoController = new InfoController();
+        this.botController = new BotController(this);
         this.sb = new StringBuilder();
 
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
@@ -50,12 +52,9 @@ public class GameController {
 
         this.pause = false;
         this.gameLevel = 1;
-        createAsteroid();
         generateBigAsteroids(gameLevel);
-
+        generateBot(gameLevel);
     }
-
-
 
     public Hero getHero() {
         return hero;
@@ -85,6 +84,10 @@ public class GameController {
         return infoController;
     }
 
+    public BotController getBotController() {
+        return botController;
+    }
+
     public int getGameLevel() {
         return gameLevel;
     }
@@ -101,21 +104,18 @@ public class GameController {
         return stage;
     }
 
-    private void createAsteroid(){
-        for (int i = 0; i < gameLevel + 2; i++) {
-            asteroidController.setup(MathUtils.random( 0, ScreenManager.SCREEN_WIDTH - 200),
-                    MathUtils.random(0, ScreenManager.SCREEN_HEIGHT-100),
-                    MathUtils.random(-25, 25),
-                    MathUtils.random(-25, 25), 1.0f);
-        }
-
-    }
     private void generateBigAsteroids(int n) {
         for (int i = 0; i < n; i++) {
             asteroidController.setup(MathUtils.random( 0, ScreenManager.SCREEN_WIDTH - 200),
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT-100),
                     MathUtils.random(-25, 25),
                     MathUtils.random(-25, 25), 1.0f);
+        }
+    }
+
+    private void generateBot(int gameLevel) {
+        for (int i = 0; i < gameLevel; i++) {
+            botController.setup(MathUtils.random(0,ScreenManager.SCREEN_WIDTH-200), MathUtils.random(0, ScreenManager.SCREEN_HEIGHT-200));
         }
     }
 
@@ -132,6 +132,7 @@ public class GameController {
         particleController.update(dt);
         powerUpsController.update(dt);
         infoController.update(dt);
+        botController.update(dt);
         checkCollisions();
         if (!hero.isAlive()) {
             ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER, hero);

@@ -33,6 +33,7 @@ public class WorldRenderer {
         gameController.getHero().render(batch);
         gameController.getHero().renderGUI(batch, font32);
         gameController.getInfoController().render(batch, font32);
+        gameController.getBotController().render(batch);
         if (gameController.getTimer() <= 3){
             sb.setLength(0);
             sb.append("LEVEL ").append(gameController.getGameLevel()).append("\n");
