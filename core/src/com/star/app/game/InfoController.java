@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.star.app.game.helpers.ObjectPool;
 
-
-
 public class InfoController extends ObjectPool<InfoText> {
 
     @Override

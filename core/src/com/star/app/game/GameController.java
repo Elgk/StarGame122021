@@ -1,14 +1,12 @@
 package com.star.app.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.star.app.screen.GameOverScreen;
 import com.star.app.screen.ScreenManager;
 import com.star.app.screen.utils.Assets;
 
@@ -53,7 +51,9 @@ public class GameController {
         this.pause = false;
         this.gameLevel = 1;
         generateBigAsteroids(gameLevel);
-        generateBot(gameLevel);
+        botController.setup(10,10);
+     //   botController.setup(1000,10);
+      //  generateBot(gameLevel);
     }
 
     public Hero getHero() {
@@ -172,24 +172,44 @@ public class GameController {
             }
         }
 
+        for (int i = 0; i < asteroidController.getActiveList().size(); i++) {
+            Asteroid a = asteroidController.getActiveList().get(i);
+            for (int j = 0; j < botController.getActiveList().size(); j++) {
+                Bot b = botController.getActiveList().get(j);
+
+                if (a.getHitArea().overlaps(b.getHitArea())) {
+                    float dst = a.getPosition().dst(b.getPosition());
+                    float halfOverLen = (a.getHitArea().radius + b.getHitArea().radius - dst) / 2;
+                    tempVec.set(b.getPosition()).sub(a.getPosition()).nor();
+                    b.getPosition().mulAdd(tempVec, halfOverLen);
+                    a.getPosition().mulAdd(tempVec, -halfOverLen);
+
+                    float sumScl = b.getHitArea().radius + a.getHitArea().radius;
+                    b.getVelocity().mulAdd(tempVec, a.getHitArea().radius / sumScl * 100);
+                    a.getVelocity().mulAdd(tempVec, -b.getHitArea().radius / sumScl * 100);
+                }
+            }
+        }
 
         for (int i = 0; i < bulletController.getActiveList().size(); i++) {
            Bullet bullet = bulletController.getActiveList().get(i);
            for (int j = 0; j < asteroidController.getActiveList().size(); j++){
                 Asteroid a = asteroidController.getActiveList().get(j);
                 if (a.getHitArea().contains(bullet.getPosition())) {
-
-                       particleController.setup(bullet.getPosition().x + MathUtils.random(-4, 4), bullet.getPosition().y + MathUtils.random(-4, 4),
+                    particleController.getEffectBuilder().bulletCollideWithAsteroid(bullet);
+                  /*     particleController.setup(bullet.getPosition().x + MathUtils.random(-4, 4), bullet.getPosition().y + MathUtils.random(-4, 4),
                                 bullet.getVelocity().x * -0.3f + MathUtils.random(-30, 30), bullet.getVelocity().y * -0.3f + MathUtils.random(-30, 30),
                                 0.3f, 2.2f, 1.2f,
                                 1.0f, 1.0f, 1.0f, 1.0f,
-                                0.0f, 0.0f, 1.0f, 0.0f);
+                                0.0f, 0.0f, 1.0f, 0.0f);*/
 
                     bullet.deactivate();
-                    if (a.takeDamage(hero.getCurrentWeapon().getDamage())) {
-                        hero.addScore(a.getHpMax() * 100);
-                        for (int k = 0; k < 3; k++) {
-                            powerUpsController.setup(a.getPosition().x, a.getPosition().y, a.getScale() * 0.25f);
+                    if (a.takeDamage(bullet.getOwner().getCurrentWeapon().getDamage())) {
+                        if (bullet.getOwner().getOwnerType() == OwnerType.PLAYER){
+                            hero.addScore(a.getHpMax() * 100);
+                            for (int k = 0; k < 3; k++) {
+                                powerUpsController.setup(a.getPosition().x, a.getPosition().y, a.getScale() * 0.25f);
+                            }
                         }
                     }
                     break;
@@ -210,5 +230,27 @@ public class GameController {
             }
         }
 
+        for (int i = 0; i < bulletController.getActiveList().size(); i++) {
+            Bullet bullet = bulletController.getActiveList().get(i);
+            if (bullet.getOwner().getOwnerType() ==OwnerType.BOT){
+                if (hero.getHitArea().contains(bullet.getPosition())){
+                    hero.damage(bullet.getOwner().getCurrentWeapon().getDamage());
+                    bullet.deactivate();
+                }
+            }
+            if (bullet.getOwner().getOwnerType() ==OwnerType.PLAYER){
+                for (int j = 0; j < botController.getActiveList().size(); j++) {
+                    Bot bot = botController.getActiveList().get(j);
+                    if (bot.getHitArea().contains(bullet.getPosition())){
+                        bot.damage(bullet.getOwner().getCurrentWeapon().getDamage());
+                        bullet.deactivate();
+                    }
+                }
+            }
+        }
+    }
+
+    public void dispose(){
+        background.dispose();
     }
 }

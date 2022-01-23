@@ -17,39 +17,69 @@ public class ParticleController extends ObjectPool<Particle> {
                 setup(x, y, (float) Math.cos(randomAngle) * randomSpeed, (float) Math.sin(randomAngle) * randomSpeed, 1.2f, 2.0f, 1.8f, 1, 0, 0, 1, 1, 0, 0, 0.2f);
             }
         }
+
         public void takePowerUpEffect(float x, float y, PowerUp.Type type) {
-            switch (type){
+            switch (type) {
                 case MEDKIT:
                     for (int i = 0; i < 16; i++) { // делим круг на 16 частей; 6.28/16 - число пи
                         float angle = 6.28f / 16.0f * i;
                         setup(x, y, (float) Math.cos(angle) * 100, (float) Math.sin(angle) * 100,
-                                0.8f,3.0f, 2.5f,
-                                0,1,0,1,
-                                0.5f,1,0,0.5f);
+                                0.8f, 3.0f, 2.5f,
+                                0, 1, 0, 1,
+                                0.5f, 1, 0, 0.5f);
                     }
                     break;
                 case MONEY:
                     for (int i = 0; i < 16; i++) { // делим круг на 16 частей; 6.28/16 - число пи
                         float angle = 6.28f / 16.0f * i;
                         setup(x, y, (float) Math.cos(angle) * 100, (float) Math.sin(angle) * 100,
-                                0.8f,3.0f, 2.5f,
-                                1,1,0,1,
-                                1,0.5f,0,0.5f);
+                                0.8f, 3.0f, 2.5f,
+                                1, 1, 0, 1,
+                                1, 0.5f, 0, 0.5f);
                     }
                     break;
                 case AMMOS:
                     for (int i = 0; i < 16; i++) { // делим круг на 16 частей; 6.28/16 - число пи
                         float angle = 6.28f / 16.0f * i;
                         setup(x, y, (float) Math.cos(angle) * 100, (float) Math.sin(angle) * 100,
-                                0.8f,3.0f, 2.5f,
-                                1,0,0,1,
-                                1,0,1,0.5f);
+                                0.8f, 3.0f, 2.5f,
+                                1, 0, 0, 1,
+                                1, 0, 1, 0.5f);
                     }
                     break;
             }
 
         }
 
+        public void bulletCollideWithAsteroid(Bullet bullet) {
+            setup(bullet.getPosition().x + MathUtils.random(-4, 4), bullet.getPosition().y + MathUtils.random(-4, 4),
+                    bullet.getVelocity().x * -0.3f + MathUtils.random(-30, 30), bullet.getVelocity().y * -0.3f + MathUtils.random(-30, 30),
+                    0.3f, 2.2f, 1.2f,
+                    1.0f, 1.0f, 1.0f, 1.0f,
+                    0.0f, 0.0f, 1.0f, 0.0f);
+        }
+
+        public void createBulletTrace(OwnerType type, Bullet bullet) {
+            switch (type) {
+                case PLAYER:
+                    for (int i = 0; i < 2; i++) {
+                        setup(bullet.getPosition().x + MathUtils.random(-4, 4), bullet.getPosition().y + MathUtils.random(-4, 4),
+                                bullet.getVelocity().x * 0.1f + MathUtils.random(-20, 20), bullet.getVelocity().y * 0.1f + MathUtils.random(-20, 20),
+                                0.1f, 1.2f, 0.2f,
+                                1.0f, 0.7f, 0.0f, 1.0f,
+                                1.0f, 1.0f, 1.0f, 0.0f);
+                    }
+                    break;
+                case BOT:
+                    setup(bullet.getPosition().x, bullet.getPosition().y,
+                            bullet.getVelocity().x * 0.1f + MathUtils.random(-20, 20), bullet.getVelocity().y * 0.1f + MathUtils.random(-20, 20),
+                            0.11f, 2.2f, 1.2f,
+                            0.0f, 0.9f, 0.4f, 1.0f,
+                            0.0f, 0.7f, 0.1f, 0.0f);
+
+                    break;
+            }
+        }
     }
 
     private TextureRegion oneParticle;

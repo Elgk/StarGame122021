@@ -33,7 +33,6 @@ public class Asteroid implements Poolable {
         this.velocity = new Vector2(0,0);
         this.hitArea = new Circle(0,0,0);
         this.gameController = gameController;
-       // this.angle = 0.0f;
         this.active = false;
     }
 

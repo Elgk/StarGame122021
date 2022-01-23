@@ -3,6 +3,7 @@ package com.star.app.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.star.app.screen.ScreenManager;
@@ -22,7 +23,7 @@ public class Ship {
     protected Weapon[] weapons;
     protected int weaponNum;
     protected Weapon currentWeapon;
-
+    protected OwnerType ownerType;
 
     public Ship(GameController gameController, int hpMax, float enginePower) {
         this.gameController = gameController;
@@ -56,6 +57,10 @@ public class Ship {
         return position;
     }
 
+    public OwnerType getOwnerType() {
+        return ownerType;
+    }
+
     public void update(float dt) {
         fireTimer += dt;
         position.mulAdd(velocity, dt);
@@ -65,8 +70,17 @@ public class Ship {
             stopKoef = 0.0f;
         }
         velocity.scl(stopKoef);
-
         checkSpaceBorders();
+    }
+
+    public void accelerate(float dt){
+        velocity.x += MathUtils.cosDeg(angle) * enginePower * dt;
+        velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
+    }
+
+    public void brake(float dt){
+        velocity.x += MathUtils.cosDeg(angle) * -enginePower / 2 * dt;
+        velocity.y += MathUtils.sinDeg(angle) * -enginePower / 2 * dt;
     }
 
     public void damage(int amount) {
@@ -100,7 +114,7 @@ public class Ship {
             velocity.x *= -0.5f;
         }
         if (position.y < 32){
-
+            position.y = 32f;
             velocity.y *= -0.5f;
         }
         if (position.y > ScreenManager.SCREEN_HEIGHT - 32){

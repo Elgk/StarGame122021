@@ -21,7 +21,7 @@ public class BotController extends ObjectPool<Bot> {
             bot.render(batch);
         }
     }
-
+// при установке можно передавать различные характеристики для бота: оружие, жизнеспособность, мощность
     public void setup(float x, float y){
         getActiveElement().activate(x, y);
     }

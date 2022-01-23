@@ -1,8 +1,6 @@
 package com.star.app.screen;
 
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class AbstractScreen implements Screen {

@@ -12,8 +12,6 @@ public class StarGame extends Game {
     @Override
     public void create() {
         this.batch = new SpriteBatch();
-        // this.gameScreen = new GameScreen(batch);
-       // setScreen(gameScreen);
         ScreenManager.getInstance().init(this, batch);// инициализируются все экраны
         ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.MENU); // устанавливается текущий экран -
     }
@@ -22,7 +20,6 @@ public class StarGame extends Game {
     public void render() {
         float dt = Gdx.graphics.getDeltaTime();
         getScreen().render(dt);
-
     }
 
     @Override

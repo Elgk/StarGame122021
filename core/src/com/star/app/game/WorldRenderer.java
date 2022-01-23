@@ -30,10 +30,10 @@ public class WorldRenderer {
         gameController.getBulletController().render(batch);
         gameController.getParticleController().render(batch);
         gameController.getPowerUpsController().render(batch);
-        gameController.getHero().render(batch);
-        gameController.getHero().renderGUI(batch, font32);
         gameController.getInfoController().render(batch, font32);
         gameController.getBotController().render(batch);
+        gameController.getHero().render(batch);
+        gameController.getHero().renderGUI(batch, font32);
         if (gameController.getTimer() <= 3){
             sb.setLength(0);
             sb.append("LEVEL ").append(gameController.getGameLevel()).append("\n");

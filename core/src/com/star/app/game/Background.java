@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.star.app.screen.ScreenManager;
-import com.star.app.StarGame;
 import com.star.app.screen.utils.Assets;
 
 import static com.star.app.screen.ScreenManager.*;
@@ -47,7 +46,6 @@ public class Background {
 
     private final int STAR_COUNT = 1000;
     private GameController gameController;
-  //  private StarGame starGame;
     private Texture textureCosmos;
     private TextureRegion textureStar;
     private Star[] stars;

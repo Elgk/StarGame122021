@@ -1,6 +1,5 @@
 package com.star.app.game;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.star.app.game.helpers.ObjectPool;
@@ -27,8 +26,8 @@ public class BulletController extends ObjectPool<Bullet> {
 
         }
     }
-    public void setup(float x, float y, float vx, float vy){
-        getActiveElement().activate(x,y,vx,vy);
+    public void setup(Ship owner, float x, float y, float vx, float vy){
+        getActiveElement().activate(owner, x, y, vx, vy);
     }
 
     public void update(float dt){

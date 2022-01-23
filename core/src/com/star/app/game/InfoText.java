@@ -2,11 +2,7 @@ package com.star.app.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.star.app.game.helpers.ObjectPool;
 import com.star.app.game.helpers.Poolable;
-import org.w3c.dom.Text;
-
-
 
 public class InfoText implements Poolable {
 
