@@ -14,7 +14,7 @@ public class Bot extends Ship implements Poolable {
     private final float BASE_RADIUS = BASE_SIZE / 2;
 
     public Bot(GameController gameController) {
-        super(gameController, 50, 200);
+        super(gameController, 30, 200);
         this.texture = Assets.getInstance().getTextureAtlas().findRegion("ship");
         this.position = new Vector2(0, 0);
         this.velocity = new Vector2(0,0);
@@ -33,8 +33,10 @@ public class Bot extends Ship implements Poolable {
         active = false;
     }
 
-    public void activate( float x, float y){
+    public void activate( float x, float y, int hpIncrease, int enginePowerIncrease){
         this.position.set(x,y);
+        this.hpMax += hpIncrease;
+        this.enginePower += enginePowerIncrease;
         this.active = true;
     }
 
