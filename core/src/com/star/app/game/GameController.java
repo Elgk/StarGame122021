@@ -51,9 +51,7 @@ public class GameController {
         this.pause = false;
         this.gameLevel = 1;
         generateBigAsteroids(gameLevel);
-        botController.setup(10,10);
-     //   botController.setup(1000,10);
-      //  generateBot(gameLevel);
+
     }
 
     public Hero getHero() {
@@ -110,12 +108,6 @@ public class GameController {
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT-100),
                     MathUtils.random(-25, 25),
                     MathUtils.random(-25, 25), 1.0f);
-        }
-    }
-
-    private void generateBot(int gameLevel) {
-        for (int i = 0; i < gameLevel; i++) {
-            botController.setup(MathUtils.random(0,ScreenManager.SCREEN_WIDTH-200), MathUtils.random(0, ScreenManager.SCREEN_HEIGHT-200));
         }
     }
 
@@ -209,6 +201,9 @@ public class GameController {
                             hero.addScore(a.getHpMax() * 100);
                             for (int k = 0; k < 3; k++) {
                                 powerUpsController.setup(a.getPosition().x, a.getPosition().y, a.getScale() * 0.25f);
+                            }
+                            for (int k = 0; k < gameLevel; k++) {
+                                botController.setup(a.getPosition().x, a.getPosition().y, gameLevel * 0.01f);
                             }
                         }
                     }
